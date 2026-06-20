@@ -1,0 +1,10 @@
+build/
+.cache/
+compile_commands.json
+*.osm.pbf
+*.grp
+__pycache__/
+*.pyd
+*.so
+node_modules/
+.env
