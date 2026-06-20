@@ -3,7 +3,10 @@
 include_directories(include)
 
 # Core Library
-add_library(georoute_core STATIC src/graph.cpp)
+add_library(georoute_core STATIC 
+    src/graph.cpp
+    src/serializer.cpp
+)
 
 # CLI Executable
 add_executable(georoute_cli src/main.cpp)
@@ -21,9 +24,14 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(georoute_tests tests/main_test.cpp tests/test_graph.cpp)
+add_executable(georoute_tests 
+    tests/main_test.cpp 
+    tests/test_graph.cpp
+    tests/test_serializer.cpp
+)
 target_link_libraries(georoute_tests gtest_main georoute_core)
 
 include(GoogleTest)
 gtest_discover_tests(georoute_tests)
+
 
