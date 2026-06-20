@@ -15,16 +15,20 @@ struct QueueElement {
     }
 };
 
-PathResult Dijkstra::route(const CSRGraph& graph, uint32_t source, uint32_t target) {
-    auto start_time = std::chrono::high_resolution_clock::now();
+PathResult DijkstraAlgorithm::route(const CSRGraph& graph, uint32_t source, uint32_t target) {
+    validate_query(graph, source, target);
 
+    auto start_time = std::chrono::high_resolution_clock::now();
     PathResult result;
-    if (source >= graph.nodes.size() || target >= graph.nodes.size()) {
+
+    if (source == target) {
+        result.path.total_distance = 0.0f;
+        result.path.node_ids.push_back(source);
         return result;
     }
 
-    std::vector<float> dist(graph.nodes.size(), std::numeric_limits<float>::infinity());
-    std::vector<uint32_t> parent(graph.nodes.size(), std::numeric_limits<uint32_t>::max());
+    std::vector<float> dist(graph.node_count(), std::numeric_limits<float>::infinity());
+    std::vector<uint32_t> parent(graph.node_count(), static_cast<uint32_t>(-1));
     
     std::priority_queue<QueueElement, std::vector<QueueElement>, std::greater<QueueElement>> pq;
 
@@ -32,6 +36,7 @@ PathResult Dijkstra::route(const CSRGraph& graph, uint32_t source, uint32_t targ
     pq.push({source, 0.0f});
 
     uint32_t visit_order = 0;
+    float final_distance = -1.0f;
 
     while (!pq.empty()) {
         auto current = pq.top();
@@ -39,20 +44,19 @@ PathResult Dijkstra::route(const CSRGraph& graph, uint32_t source, uint32_t targ
 
         if (current.dist > dist[current.node]) continue;
 
-        result.nodes_explored++;
-        result.visited.push_back({current.node, visit_order++, current.dist, true});
+        result.exploration.nodes_explored++;
+        result.exploration.visited.push_back({current.node, visit_order++, current.dist, true});
 
         if (current.node == target) {
-            result.distance = current.dist;
+            final_distance = current.dist;
             break;
         }
 
-        uint32_t edge_start = graph.offsets[current.node];
-        uint32_t edge_end = graph.offsets[current.node + 1];
+        auto [edge_start, edge_end] = graph.edge_range(current.node);
 
         for (uint32_t e = edge_start; e < edge_end; ++e) {
-            uint32_t next_node = graph.targets[e];
-            float next_dist = current.dist + graph.weights[e];
+            uint32_t next_node = graph.target(e);
+            float next_dist = current.dist + graph.weight(e);
 
             if (next_dist < dist[next_node]) {
                 dist[next_node] = next_dist;
@@ -62,17 +66,10 @@ PathResult Dijkstra::route(const CSRGraph& graph, uint32_t source, uint32_t targ
         }
     }
 
-    if (result.distance >= 0.0f) {
-        uint32_t curr = target;
-        while (curr != std::numeric_limits<uint32_t>::max()) {
-            result.path.push_back(curr);
-            curr = parent[curr];
-        }
-        std::reverse(result.path.begin(), result.path.end());
-    }
+    result.path = reconstruct_path(parent, target, final_distance);
 
     auto end_time = std::chrono::high_resolution_clock::now();
-    result.execution_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+    result.metrics.execution_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
 
     return result;
 }

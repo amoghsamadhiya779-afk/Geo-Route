@@ -1,5 +1,6 @@
 #include "georoute/osm_parser.h"
 #include "georoute/haversine.h"
+#include "georoute/types.h"
 
 #include <osmium/io/pbf_input.hpp>
 #include <osmium/handler.hpp>
@@ -15,53 +16,64 @@
 
 namespace georoute {
 
+static bool is_routable_highway(const char* hw) {
+    if (!hw) return false;
+    std::string type(hw);
+    return type != "footway" && type != "pedestrian" && type != "path" && type != "steps";
+}
+
 // Pass 1: Count how many ways each node belongs to, to identify intersections
 class NodeCounterHandler : public osmium::handler::Handler {
-public:
-    std::unordered_map<osmium::object_id_type, int> node_way_count;
-    std::unordered_set<osmium::object_id_type> intersection_nodes;
+private:
+    std::unordered_map<osmium::object_id_type, int> node_way_count_;
+    std::unordered_set<osmium::object_id_type> intersection_nodes_;
 
+public:
     void way(const osmium::Way& way) {
         if (!way.tags().has_key("highway")) return;
-
-        const char* hw = way.tags().get_value_by_key("highway");
-        std::string type(hw ? hw : "");
-        if (type == "footway" || type == "pedestrian" || type == "path" || type == "steps") return;
+        if (!is_routable_highway(way.tags().get_value_by_key("highway"))) return;
 
         const auto& nodes = way.nodes();
         if (nodes.size() < 2) return;
 
-        intersection_nodes.insert(nodes.front().ref());
-        intersection_nodes.insert(nodes.back().ref());
+        intersection_nodes_.insert(nodes.front().ref());
+        intersection_nodes_.insert(nodes.back().ref());
 
         for (const auto& node_ref : nodes) {
-            node_way_count[node_ref.ref()]++;
-            if (node_way_count[node_ref.ref()] > 1) {
-                intersection_nodes.insert(node_ref.ref());
+            node_way_count_[node_ref.ref()]++;
+            if (node_way_count_[node_ref.ref()] > 1) {
+                intersection_nodes_.insert(node_ref.ref());
             }
         }
+    }
+
+    const std::unordered_set<osmium::object_id_type>& get_intersections() const {
+        return intersection_nodes_;
     }
 };
 
 // Pass 2: Extract the graph using the identified intersection nodes
 class GraphBuilderHandler : public osmium::handler::Handler {
-    AdjacencyGraph& graph;
+    GraphBuilder& builder;
     const std::unordered_set<osmium::object_id_type>& intersection_nodes;
 
 public:
-    GraphBuilderHandler(AdjacencyGraph& g, const std::unordered_set<osmium::object_id_type>& intersections)
-        : graph(g), intersection_nodes(intersections) {}
+    GraphBuilderHandler(GraphBuilder& g, const std::unordered_set<osmium::object_id_type>& intersections)
+        : builder(g), intersection_nodes(intersections) {}
 
     void way(const osmium::Way& way) {
         if (!way.tags().has_key("highway")) return;
         const char* hw = way.tags().get_value_by_key("highway");
-        std::string type(hw ? hw : "");
-        if (type == "footway" || type == "pedestrian" || type == "path" || type == "steps") return;
+        if (!is_routable_highway(hw)) return;
 
+        std::string type(hw);
         bool oneway = false;
         const char* ow = way.tags().get_value_by_key("oneway");
-        if (ow && (std::string(ow) == "yes" || std::string(ow) == "1" || std::string(ow) == "true")) {
-            oneway = true;
+        if (ow) {
+            std::string ow_str(ow);
+            if (ow_str == "yes" || ow_str == "1" || ow_str == "true") {
+                oneway = true;
+            }
         }
 
         uint16_t road_type = 1; // Default
@@ -74,7 +86,7 @@ public:
         const auto& nodes = way.nodes();
         if (nodes.size() < 2) return;
 
-        osmium::object_id_type last_intersection_id = 0;
+        osmium::object_id_type last_intersection_id = std::numeric_limits<osmium::object_id_type>::max();
         double segment_distance = 0.0;
         osmium::Location last_loc;
 
@@ -84,16 +96,16 @@ public:
 
             if (!loc.valid()) continue;
 
-            if (last_intersection_id != 0) {
+            if (last_intersection_id != std::numeric_limits<osmium::object_id_type>::max()) {
                 segment_distance += haversine(last_loc.lat(), last_loc.lon(), loc.lat(), loc.lon());
             }
 
             if (intersection_nodes.count(id)) {
-                uint32_t current_idx = graph.add_node(id, loc.lat(), loc.lon());
+                uint32_t current_idx = builder.add_node(id, loc.lat(), loc.lon());
 
-                if (last_intersection_id != 0 && last_intersection_id != id) {
-                    uint32_t last_idx = graph.osm_to_idx[last_intersection_id];
-                    graph.add_edge(last_idx, current_idx, static_cast<float>(segment_distance), road_type, oneway);
+                if (last_intersection_id != std::numeric_limits<osmium::object_id_type>::max() && last_intersection_id != id) {
+                    uint32_t last_idx = builder.get_node_idx(last_intersection_id);
+                    builder.add_edge(last_idx, current_idx, static_cast<float>(segment_distance), road_type, oneway);
                 }
 
                 last_intersection_id = id;
@@ -105,30 +117,35 @@ public:
 };
 
 CSRGraph OSMParser::parse(const std::string& pbf_path) {
-    std::cout << "Starting Pass 1 (Identifying Intersections)..." << std::endl;
-    osmium::io::Reader reader1{pbf_path, osmium::osm_entity_bits::way};
-    NodeCounterHandler counter_handler;
-    osmium::apply(reader1, counter_handler);
-    reader1.close();
+    try {
+        std::cout << "Starting Pass 1 (Identifying Intersections)..." << std::endl;
+        osmium::io::Reader reader1{pbf_path, osmium::osm_entity_bits::way};
+        NodeCounterHandler counter_handler;
+        osmium::apply(reader1, counter_handler);
+        reader1.close();
 
-    std::cout << "Found " << counter_handler.intersection_nodes.size() << " intersections." << std::endl;
+        std::cout << "Found " << counter_handler.get_intersections().size() << " intersections." << std::endl;
 
-    std::cout << "Starting Pass 2 (Building Graph)..." << std::endl;
-    using Index = osmium::index::map::SparseMemArray<osmium::unsigned_object_id_type, osmium::Location>;
-    using LocationHandler = osmium::handler::NodeLocationsForWays<Index>;
+        std::cout << "Starting Pass 2 (Building Graph)..." << std::endl;
+        using Index = osmium::index::map::SparseMemArray<osmium::unsigned_object_id_type, osmium::Location>;
+        using LocationHandler = osmium::handler::NodeLocationsForWays<Index>;
 
-    Index index;
-    LocationHandler location_handler{index};
-    
-    AdjacencyGraph graph;
-    GraphBuilderHandler builder_handler{graph, counter_handler.intersection_nodes};
+        Index index;
+        LocationHandler location_handler{index};
+        
+        GraphBuilder builder;
+        GraphBuilderHandler builder_handler{builder, counter_handler.get_intersections()};
 
-    osmium::io::Reader reader2{pbf_path, osmium::osm_entity_bits::node | osmium::osm_entity_bits::way};
-    osmium::apply(reader2, location_handler, builder_handler);
-    reader2.close();
+        osmium::io::Reader reader2{pbf_path, osmium::osm_entity_bits::node | osmium::osm_entity_bits::way};
+        osmium::apply(reader2, location_handler, builder_handler);
+        reader2.close();
 
-    std::cout << "Parsed " << graph.nodes.size() << " nodes." << std::endl;
-    return graph.to_csr();
+        CSRGraph final_graph = builder.build();
+        std::cout << "Parsed " << final_graph.node_count() << " nodes." << std::endl;
+        return final_graph;
+    } catch (const std::exception& e) {
+        throw ParseError(std::string("OSM Parsing failed: ") + e.what());
+    }
 }
 
 } // namespace georoute

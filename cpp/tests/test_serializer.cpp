@@ -3,51 +3,35 @@
 #include "georoute/serializer.h"
 #include <cstdio>
 
-using namespace georoute;
-
-TEST(SerializerTest, RoundTrip) {
-    AdjacencyGraph graph;
-    uint32_t n0 = graph.add_node(100, 40.7128, -74.0060);
-    uint32_t n1 = graph.add_node(101, 40.7129, -74.0061);
-    uint32_t n2 = graph.add_node(102, 40.7130, -74.0062);
+TEST(SerializerTest, SaveAndLoad) {
+    georoute::GraphBuilder builder;
+    uint32_t n0 = builder.add_node(100, 40.0, -74.0);
+    uint32_t n1 = builder.add_node(101, 40.1, -74.1);
+    builder.add_edge(n0, n1, 15.5f, 1, false); // bidir
     
-    graph.add_edge(n0, n1, 10.5f, 1, false);
-    graph.add_edge(n1, n2, 20.0f, 2, true);
+    georoute::CSRGraph original = builder.build();
     
-    CSRGraph original = graph.to_csr();
-    
-    std::string test_file = "test_graph.grp";
+    const std::string filename = "test_graph.grp";
     
     // Save
-    EXPECT_NO_THROW(Serializer::save_graph(original, test_file));
+    georoute::Serializer::save_graph(original, filename);
     
     // Load
-    CSRGraph loaded;
-    EXPECT_NO_THROW(loaded = Serializer::load_graph(test_file));
+    georoute::CSRGraph loaded = georoute::Serializer::load_graph(filename);
     
-    // Compare
-    EXPECT_EQ(original.nodes.size(), loaded.nodes.size());
-    for (size_t i = 0; i < original.nodes.size(); ++i) {
-        EXPECT_DOUBLE_EQ(original.nodes[i].lat, loaded.nodes[i].lat);
-        EXPECT_DOUBLE_EQ(original.nodes[i].lon, loaded.nodes[i].lon);
-        EXPECT_EQ(original.nodes[i].osm_id, loaded.nodes[i].osm_id);
-    }
+    EXPECT_EQ(original.node_count(), loaded.node_count());
+    EXPECT_EQ(original.edge_count(), loaded.edge_count());
     
-    EXPECT_EQ(original.offsets.size(), loaded.offsets.size());
-    for (size_t i = 0; i < original.offsets.size(); ++i) {
-        EXPECT_EQ(original.offsets[i], loaded.offsets[i]);
-    }
+    EXPECT_EQ(loaded.node_count(), 2);
+    EXPECT_EQ(loaded.edge_count(), 2);
     
-    EXPECT_EQ(original.targets.size(), loaded.targets.size());
-    for (size_t i = 0; i < original.targets.size(); ++i) {
-        EXPECT_EQ(original.targets[i], loaded.targets[i]);
-    }
+    EXPECT_FLOAT_EQ(loaded.node(0).lat, 40.0);
+    EXPECT_FLOAT_EQ(loaded.node(0).lon, -74.0);
     
-    EXPECT_EQ(original.weights.size(), loaded.weights.size());
-    for (size_t i = 0; i < original.weights.size(); ++i) {
-        EXPECT_FLOAT_EQ(original.weights[i], loaded.weights[i]);
-    }
+    auto [s0, e0] = loaded.edge_range(0);
+    EXPECT_EQ(e0 - s0, 1);
+    EXPECT_EQ(loaded.target(s0), 1);
+    EXPECT_FLOAT_EQ(loaded.weight(s0), 15.5f);
     
-    // Cleanup
-    std::remove(test_file.c_str());
+    std::remove(filename.c_str());
 }

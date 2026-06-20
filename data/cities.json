@@ -1,0 +1,132 @@
+{
+  "cities": [
+    {
+      "id": "manhattan",
+      "name": "Manhattan",
+      "country": "USA",
+      "center": {"lat": 40.7831, "lon": -73.9712},
+      "zoom": 12,
+      "graph_file": "../data/graphs/manhattan.graph"
+    },
+    {
+      "id": "paris",
+      "name": "Paris",
+      "country": "France",
+      "center": {"lat": 48.8566, "lon": 2.3522},
+      "zoom": 12,
+      "graph_file": "../data/graphs/paris.graph"
+    },
+    {
+      "id": "tokyo",
+      "name": "Tokyo",
+      "country": "Japan",
+      "center": {"lat": 35.6762, "lon": 139.6503},
+      "zoom": 11,
+      "graph_file": "../data/graphs/tokyo.graph"
+    },
+    {
+      "id": "london",
+      "name": "London",
+      "country": "UK",
+      "center": {"lat": 51.5074, "lon": -0.1278},
+      "zoom": 11,
+      "graph_file": "../data/graphs/london.graph"
+    },
+    {
+      "id": "singapore",
+      "name": "Singapore",
+      "country": "Singapore",
+      "center": {"lat": 1.3521, "lon": 103.8198},
+      "zoom": 11,
+      "graph_file": "../data/graphs/singapore.graph"
+    },
+    {
+      "id": "dubai",
+      "name": "Dubai",
+      "country": "UAE",
+      "center": {"lat": 25.2048, "lon": 55.2708},
+      "zoom": 11,
+      "graph_file": "../data/graphs/dubai.graph"
+    },
+    {
+      "id": "zurich",
+      "name": "Zurich",
+      "country": "Switzerland",
+      "center": {"lat": 47.3769, "lon": 8.5417},
+      "zoom": 12,
+      "graph_file": "../data/graphs/zurich.graph"
+    },
+    {
+      "id": "reykjavik",
+      "name": "Reykjavik",
+      "country": "Iceland",
+      "center": {"lat": 64.1466, "lon": -21.9426},
+      "zoom": 12,
+      "graph_file": "../data/graphs/reykjavik.graph"
+    },
+    {
+      "id": "bali",
+      "name": "Bali",
+      "country": "Indonesia",
+      "center": {"lat": -8.4095, "lon": 115.1889},
+      "zoom": 10,
+      "graph_file": "../data/graphs/bali.graph"
+    },
+    {
+      "id": "sydney",
+      "name": "Sydney",
+      "country": "Australia",
+      "center": {"lat": -33.8688, "lon": 151.2093},
+      "zoom": 11,
+      "graph_file": "../data/graphs/sydney.graph"
+    },
+    {
+      "id": "rio",
+      "name": "Rio de Janeiro",
+      "country": "Brazil",
+      "center": {"lat": -22.9068, "lon": -43.1729},
+      "zoom": 11,
+      "graph_file": "../data/graphs/rio.graph"
+    },
+    {
+      "id": "cape_town",
+      "name": "Cape Town",
+      "country": "South Africa",
+      "center": {"lat": -33.9249, "lon": 18.4241},
+      "zoom": 11,
+      "graph_file": "../data/graphs/cape_town.graph"
+    },
+    {
+      "id": "mumbai",
+      "name": "Mumbai",
+      "country": "India",
+      "center": {"lat": 19.0760, "lon": 72.8777},
+      "zoom": 11,
+      "graph_file": "../data/graphs/mumbai.graph"
+    },
+    {
+      "id": "delhi",
+      "name": "Delhi",
+      "country": "India",
+      "center": {"lat": 28.7041, "lon": 77.1025},
+      "zoom": 11,
+      "graph_file": "../data/graphs/delhi.graph"
+    },
+    {
+      "id": "hyderabad",
+      "name": "Hyderabad",
+      "country": "India",
+      "center": {"lat": 17.3850, "lon": 78.4867},
+      "zoom": 11,
+      "graph_file": "../data/graphs/hyderabad.graph"
+    },
+    {
+      "id": "chennai",
+      "name": "Chennai",
+      "country": "India",
+      "center": {"lat": 13.0827, "lon": 80.2707},
+      "zoom": 11,
+      "graph_file": "../data/graphs/chennai.graph"
+    }
+  ]
+}

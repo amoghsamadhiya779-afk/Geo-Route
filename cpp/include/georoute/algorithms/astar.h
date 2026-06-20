@@ -1,13 +1,18 @@
 #pragma once
 
-#include "georoute/algorithms/dijkstra.h"
+#include "georoute/algorithms/routing_algorithm.h"
 
 namespace georoute {
 
-class AStar {
+class AStarAlgorithm : public IRoutingAlgorithm {
+private:
+    float heuristic_weight_;
+
 public:
-    // weight > 1.0 makes it a greedy search (faster, but potentially suboptimal)
-    static PathResult route(const CSRGraph& graph, uint32_t source, uint32_t target, float weight = 1.0f);
+    explicit AStarAlgorithm(float heuristic_weight = 1.0f) : heuristic_weight_(heuristic_weight) {}
+
+    [[nodiscard]] std::string name() const override { return "A* (w=" + std::to_string(heuristic_weight_) + ")"; }
+    [[nodiscard]] PathResult route(const CSRGraph& graph, uint32_t source, uint32_t target) override;
 };
 
 } // namespace georoute
