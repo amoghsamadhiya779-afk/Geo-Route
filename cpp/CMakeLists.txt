@@ -2,11 +2,21 @@
 
 include_directories(include)
 
+find_package(osmium REQUIRED COMPONENTS pbf)
+find_package(ZLIB REQUIRED)
+
 # Core Library
 add_library(georoute_core STATIC 
     src/graph.cpp
     src/serializer.cpp
+    src/osm_parser.cpp
+    src/algorithms/dijkstra.cpp
+    src/algorithms/astar.cpp
+    src/algorithms/bidirectional_astar.cpp
 )
+target_include_directories(georoute_core PUBLIC ${OSMIUM_INCLUDE_DIRS})
+target_link_libraries(georoute_core PUBLIC ${OSMIUM_LIBRARIES} ZLIB::ZLIB)
+
 
 # CLI Executable
 add_executable(georoute_cli src/main.cpp)
