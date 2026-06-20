@@ -2,8 +2,12 @@
 
 include_directories(include)
 
+# Core Library
+add_library(georoute_core STATIC src/graph.cpp)
+
 # CLI Executable
 add_executable(georoute_cli src/main.cpp)
+target_link_libraries(georoute_cli georoute_core)
 
 # GoogleTest Integration
 include(FetchContent)
@@ -17,8 +21,9 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-add_executable(georoute_tests tests/main_test.cpp)
-target_link_libraries(georoute_tests gtest_main)
+add_executable(georoute_tests tests/main_test.cpp tests/test_graph.cpp)
+target_link_libraries(georoute_tests gtest_main georoute_core)
 
 include(GoogleTest)
 gtest_discover_tests(georoute_tests)
+
