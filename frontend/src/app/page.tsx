@@ -39,12 +39,6 @@ export default function LandingPage() {
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </button>
             </Link>
-
-            <Link href="/demo">
-              <button className="inline-flex h-14 items-center justify-center rounded-md border border-border bg-transparent px-8 font-medium text-foreground transition-colors hover:bg-secondary">
-                View Intelligence Demo
-              </button>
-            </Link>
           </div>
         </motion.div>
       </div>
