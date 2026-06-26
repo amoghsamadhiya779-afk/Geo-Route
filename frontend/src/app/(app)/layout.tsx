@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Globe2, Map, Activity, BarChart2, Compass, Layers, Cpu, Code2, TerminalSquare } from "lucide-react";
+import { Globe2, Map, Activity, BarChart2, Compass, Layers, Cpu, Code2, TerminalSquare, Leaf, Plug, ChevronDown, Building2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { CommandPalette } from "@/components/CommandPalette";
 
 const SIDEBAR_NAV = [
-  { name: "Command Center", href: "/command-center", icon: TerminalSquare },
-  { name: "Routes", href: "/routes", icon: Map },
-  { name: "Simulation Lab", href: "/simulation", icon: Activity },
+  { name: "Control Tower", href: "/command-center", icon: TerminalSquare },
+  { name: "Fleet Dispatch (VRP)", href: "/routes", icon: Map },
+  { name: "Digital Twin Sandbox", href: "/simulation", icon: Activity },
+  { name: "ESG & Analytics", href: "/esg-analytics", icon: Leaf },
+  { name: "Telematics API", href: "/telematics", icon: Plug },
   { name: "Predictions", href: "/predictions", icon: Compass },
   { name: "Observability", href: "/observability", icon: BarChart2 },
   { name: "Knowledge Graph", href: "/knowledge-graph", icon: Layers },
@@ -24,10 +26,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen w-screen bg-background overflow-hidden text-foreground">
       <CommandPalette />
       {/* Left Sidebar */}
-      <nav className="w-64 border-r border-border bg-card flex flex-col z-20 shadow-xl">
+      <nav className="w-64 border-r border-border bg-card flex flex-col z-20">
         <div className="p-6 flex items-center space-x-3 mb-4">
           <Globe2 className="w-6 h-6 text-primary" />
-          <span className="font-bold tracking-widest text-lg">TRENT</span>
+          <span className="font-bold tracking-widest text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#00f0ff]">TRENT</span>
         </div>
         
         <div className="flex-1 overflow-y-auto py-2 flex flex-col gap-1 px-3">
@@ -54,7 +56,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         <div className="p-4 border-t border-border">
           <div className="text-xs font-mono text-muted-foreground flex justify-between">
             <span>STATUS</span>
-            <span className="text-emerald-500">ONLINE</span>
+            <span className="text-[#8052ff]">ONLINE</span>
           </div>
         </div>
       </nav>
@@ -63,10 +65,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 flex flex-col relative z-10">
         {/* Top Navbar / Utility Bar */}
         <header className="h-14 border-b border-border bg-background/80 backdrop-blur-md flex items-center px-6 justify-between shrink-0">
-          <div className="flex items-center text-sm font-mono text-muted-foreground">
-            <span className="opacity-50">Press</span>
-            <kbd className="mx-2 px-2 py-0.5 bg-secondary rounded border border-border text-foreground">⌘ K</kbd>
-            <span className="opacity-50">to open command palette</span>
+          <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-2">
+              <Globe2 className="w-5 h-5 text-primary" />
+              <span className="font-bold tracking-widest text-lg bg-clip-text text-transparent bg-gradient-to-r from-primary to-[#00f0ff]">TRENT</span>
+            </div>
+            <div className="h-4 w-px bg-border hidden sm:block"></div>
+            <div className="hidden sm:flex items-center text-sm font-mono text-muted-foreground">
+              <span className="opacity-50">Press</span>
+              <kbd className="mx-2 px-2 py-0.5 bg-secondary rounded border border-border text-foreground">⌘ K</kbd>
+              <span className="opacity-50">to open command palette</span>
+            </div>
           </div>
           
           <div className="flex items-center space-x-4 text-xs font-mono">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useEffect, useMemo } from "react";
 import {
@@ -34,10 +34,10 @@ import {
 
 // Mock Data Generators for Live Telemetry
 const latencyDistributionData = [
-  { range: "< 2ms", count: 240, color: "#10b981" },
-  { range: "2 - 5ms", count: 480, color: "#10b981" },
+  { range: "< 2ms", count: 240, color: "#00f0ff" },
+  { range: "2 - 5ms", count: 480, color: "#00f0ff" },
   { range: "5 - 10ms", count: 180, color: "#34d399" },
-  { range: "10 - 20ms", count: 90, color: "#f59e0b" },
+  { range: "10 - 20ms", count: 90, color: "#ffb829" },
   { range: "20 - 50ms", count: 40, color: "#f97316" },
   { range: "> 50ms", count: 15, color: "#ef4444" },
 ];
@@ -146,7 +146,7 @@ export default function ObservabilityPage() {
 
   if (!mounted) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-[#0a0a0a] text-muted-foreground font-mono text-sm">
+      <div className="h-full w-full flex items-center justify-center bg-[#000000] text-muted-foreground font-mono text-sm">
         <Activity className="w-5 h-5 animate-pulse mr-2 text-primary" />
         INITIALIZING OBSERVABILITY GRAPHICS...
       </div>
@@ -154,11 +154,11 @@ export default function ObservabilityPage() {
   }
 
   return (
-    <div className="h-full w-full flex bg-[#0a0a0a] relative overflow-hidden text-foreground">
+    <div className="h-full w-full flex bg-[#000000] relative overflow-hidden text-foreground">
       {/* Left Settings / Control Panel */}
       <div className="w-80 border-r border-border bg-card/60 backdrop-blur-xl flex flex-col shrink-0 z-10">
         <div className="p-4 border-b border-border">
-          <div className="flex items-center space-x-2 text-emerald-500 mb-2">
+          <div className="flex items-center space-x-2 text-[#8052ff] mb-2">
             <Server className="w-5 h-5" />
             <h1 className="font-bold tracking-tight text-lg">System Telemetry</h1>
           </div>
@@ -234,7 +234,7 @@ export default function ObservabilityPage() {
             <h3 className="text-xs font-semibold text-muted-foreground tracking-wider uppercase">
               Engine Details
             </h3>
-            <div className="space-y-2 border border-border/50 p-3 rounded-lg bg-secondary/15">
+            <div className="space-y-2 border border-border/50 p-3 rounded-2xl bg-secondary/15">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Compiler:</span>
                 <span className="text-foreground font-bold">MSVC / GCC 13.2</span>
@@ -298,20 +298,20 @@ export default function ObservabilityPage() {
             <div className="text-3xl font-extrabold tracking-tight mt-1 font-mono text-primary">
               {activeStats.avgLatency}
             </div>
-            <div className="text-[10px] font-mono text-emerald-400 mt-1 flex items-center">
+            <div className="text-[10px] font-mono text-[#00f0ff] mt-1 flex items-center">
               <TrendingUp className="w-3 h-3 mr-1" />
               <span>99th percentile: 18.2ms</span>
             </div>
           </div>
 
           <div className="border border-border bg-card/40 backdrop-blur-md p-4 rounded-xl shadow-lg relative overflow-hidden">
-            <div className="absolute right-3 top-3 opacity-15 text-emerald-500">
+            <div className="absolute right-3 top-3 opacity-15 text-[#8052ff]">
               <Database className="w-8 h-8" />
             </div>
             <div className="text-[11px] font-mono font-semibold tracking-wider text-muted-foreground uppercase">
               Cache Hit Ratio
             </div>
-            <div className="text-3xl font-extrabold tracking-tight mt-1 font-mono text-emerald-400">
+            <div className="text-3xl font-extrabold tracking-tight mt-1 font-mono text-[#00f0ff]">
               {activeStats.cacheHitRate}
             </div>
             <div className="text-[10px] font-mono text-muted-foreground mt-1">
@@ -363,7 +363,7 @@ export default function ObservabilityPage() {
                   Query counts grouped by execution latency interval.
                 </p>
               </div>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+              <span className="text-[10px] font-mono text-[#00f0ff] bg-[#8052ff]/10 px-2 py-0.5 rounded border border-[#8052ff]/20">
                 LOGARITHMIC SCALE
               </span>
             </div>
@@ -376,9 +376,9 @@ export default function ObservabilityPage() {
                   <Tooltip
                     contentStyle={{ backgroundColor: "#0a0a0a", border: "1px solid #333", borderRadius: "6px" }}
                     labelStyle={{ color: "#888", fontSize: "11px", fontFamily: "monospace" }}
-                    itemStyle={{ color: "#10b981", fontSize: "12px", fontFamily: "monospace" }}
+                    itemStyle={{ color: "#00f0ff", fontSize: "12px", fontFamily: "monospace" }}
                   />
-                  <Bar dataKey="count" fill="#10b981" radius={[4, 4, 0, 0]}>
+                  <Bar dataKey="count" fill="#00f0ff" radius={[4, 4, 0, 0]}>
                     {latencyDistributionData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
@@ -408,8 +408,8 @@ export default function ObservabilityPage() {
                 <AreaChart data={cpuHistory} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorRouter" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#8052ff" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#8052ff" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorIndexer" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#a855f7" stopOpacity={0.3} />
@@ -428,7 +428,7 @@ export default function ObservabilityPage() {
                     type="monotone"
                     dataKey="coreRouter"
                     name="Router Engine Threads"
-                    stroke="#3b82f6"
+                    stroke="#8052ff"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorRouter)"
@@ -469,8 +469,8 @@ export default function ObservabilityPage() {
                   />
                   <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: "10px", fontFamily: "monospace" }} />
                   <Bar dataKey="Dijkstra" name="Dijkstra Standard" fill="#64748b" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="Astar" name="A* (Haversine)" fill="#3b82f6" radius={[3, 3, 0, 0]} />
-                  <Bar dataKey="BidirectionalAstar" name="Bi-Dir A* (Optimal)" fill="#10b981" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="Astar" name="A* (Haversine)" fill="#8052ff" radius={[3, 3, 0, 0]} />
+                  <Bar dataKey="BidirectionalAstar" name="Bi-Dir A* (Optimal)" fill="#00f0ff" radius={[3, 3, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -498,8 +498,8 @@ export default function ObservabilityPage() {
                 <AreaChart data={cacheHistory} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorHits" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                      <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="#00f0ff" stopOpacity={0} />
                     </linearGradient>
                     <linearGradient id="colorMisses" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#ef4444" stopOpacity={0.2} />
@@ -518,7 +518,7 @@ export default function ObservabilityPage() {
                     type="monotone"
                     dataKey="hits"
                     name="Cache Hits"
-                    stroke="#10b981"
+                    stroke="#00f0ff"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorHits)"
@@ -543,3 +543,4 @@ export default function ObservabilityPage() {
     </div>
   );
 }
+

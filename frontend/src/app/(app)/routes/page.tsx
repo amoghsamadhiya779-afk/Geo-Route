@@ -57,11 +57,11 @@ export default function RoutesPage() {
               value={algo}
               onChange={(e) => setAlgo(e.target.value)}
             >
-              <option value="dijkstra">Dijkstra (Baseline)</option>
-              <option value="astar">A* (Heuristic)</option>
-              <option value="bidir">Bidirectional A*</option>
-              <option value="alt">A* Landmarks (ALT)</option>
-              <option value="ch">Contraction Hierarchies</option>
+              <option value="hybrid-astar">Hybrid A* (Tesla FSD Base)</option>
+              <option value="rrt-star">RRT* (Dynamic Kinematic)</option>
+              <option value="neural-planner">Neural Planner (Deep RL)</option>
+              <option value="mpc">Model Predictive Control</option>
+              <option value="d-star-lite">D* Lite (Real-time Replanning)</option>
             </select>
           </div>
 
@@ -89,7 +89,7 @@ export default function RoutesPage() {
 
          {/* Reality Mode Pill */}
          <div className="absolute top-6 left-6 z-10 bg-background/90 border border-border rounded-full px-4 py-1.5 flex items-center shadow-lg">
-           <span className="w-2 h-2 rounded-full bg-emerald-500 mr-2 animate-pulse" />
+           <span className="w-2 h-2 rounded-full bg-[#00f0ff] mr-2 animate-pulse" />
            <span className="text-xs font-mono uppercase tracking-wider">{currentReality} Reality</span>
          </div>
          
@@ -117,7 +117,7 @@ export default function RoutesPage() {
            
            {routeData && (
              <div className="mt-8 p-3 rounded bg-secondary/50 border border-border">
-                <p className="text-xs font-mono text-emerald-500">System Note:</p>
+                <p className="text-xs font-mono text-[#8052ff]">System Note:</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   Using {algo}, the system explored {routeData.metrics.nodes_explored} nodes in {routeData.metrics.execution_time_us} microseconds.
                 </p>
@@ -138,3 +138,4 @@ function DnaStat({ label, value }: { label: string, value: string | number }) {
     </div>
   )
 }
+

@@ -8,3 +8,9 @@ __pycache__/
 *.so
 node_modules/
 .env
+.agents/
+*.joblib
+*.csv
+frontend/test-results/
+progress.md
+strip_emojis.py

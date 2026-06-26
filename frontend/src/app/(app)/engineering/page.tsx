@@ -109,13 +109,13 @@ export default function EngineeringPage() {
   if (!mounted) return null;
 
   return (
-    <div className="h-full w-full flex bg-[#0a0a0a] overflow-hidden">
+    <div className="h-full w-full flex bg-[#000000] overflow-hidden">
       {/*  Left Control Panel  */}
       <aside className="w-80 shrink-0 border-r border-border bg-card/50 backdrop-blur-xl flex flex-col overflow-y-auto">
         {/* Header */}
         <div className="p-6 border-b border-border">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-emerald-500" />
+            <Code2 className="w-4 h-4 text-[#8052ff]" />
             Engineering Console
           </h2>
         </div>
@@ -133,13 +133,13 @@ export default function EngineeringPage() {
                 <button
                   key={c.id}
                   onClick={() => setSelectedComponent(c.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg flex items-center gap-3 transition-all text-sm ${
+                  className={`w-full text-left px-3 py-2.5 rounded-2xl flex items-center gap-3 transition-all text-sm ${
                     active
-                      ? "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400"
+                      ? "bg-[#8052ff]/10 border border-[#00f0ff]/30 text-[#00f0ff]"
                       : "hover:bg-white/5 border border-transparent text-muted-foreground"
                   }`}
                 >
-                  <Icon className={`w-4 h-4 ${active ? "text-emerald-500" : "text-muted-foreground"}`} />
+                  <Icon className={`w-4 h-4 ${active ? "text-[#8052ff]" : "text-muted-foreground"}`} />
                   <div className="flex flex-col">
                     <span className="font-medium text-xs">{c.label}</span>
                     <span className="text-[10px] text-muted-foreground">{c.desc}</span>
@@ -159,10 +159,10 @@ export default function EngineeringPage() {
             {BUILD_STATUSES.map((b) => (
               <div key={b.label} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${b.ok ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,.6)]" : "bg-rose-500"}`} />
+                  <span className={`w-2 h-2 rounded-full ${b.ok ? "bg-[#00f0ff] shadow-[0_0_6px_rgba(16,185,129,.6)]" : "bg-rose-500"}`} />
                   <span className="text-muted-foreground">{b.label}</span>
                 </div>
-                <span className="font-mono text-emerald-400 text-[10px]">{b.status}</span>
+                <span className="font-mono text-[#00f0ff] text-[10px]">{b.status}</span>
               </div>
             ))}
           </div>
@@ -179,7 +179,7 @@ export default function EngineeringPage() {
                 <span
                   className={`mt-1.5 w-2 h-2 shrink-0 rounded-full ${
                     ep.status === "ok"
-                      ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,.5)]"
+                      ? "bg-[#00f0ff] shadow-[0_0_6px_rgba(16,185,129,.5)]"
                       : "bg-amber-500 shadow-[0_0_6px_rgba(245,158,11,.5)]"
                   }`}
                 />
@@ -232,7 +232,7 @@ export default function EngineeringPage() {
             value="94.2%"
             sub="+1.3% this sprint"
             icon={CheckCircle}
-            color="text-emerald-400"
+            color="text-[#00f0ff]"
           />
           <KpiCard
             label="API Uptime"
@@ -253,7 +253,7 @@ export default function EngineeringPage() {
         {/* System Architecture Diagram */}
         <section className="border border-border bg-card/50 backdrop-blur rounded-xl p-6">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
-            <Layers className="w-4 h-4 text-emerald-500" />
+            <Layers className="w-4 h-4 text-[#8052ff]" />
             System Architecture
           </h2>
 
@@ -274,8 +274,8 @@ export default function EngineeringPage() {
                 title="API Gateway"
                 tech="Python FastAPI"
                 desc="REST endpoints, validation, auth middleware"
-                accent="border-emerald-500/40 bg-emerald-500/5"
-                iconColor="text-emerald-400"
+                accent="border-[#8052ff]/40 bg-[#00f0ff]/5"
+                iconColor="text-[#00f0ff]"
               />
               <ArrowConnector />
               <ArchBox
@@ -301,7 +301,7 @@ export default function EngineeringPage() {
             <div className="flex items-center gap-3 mt-1">
               <div className="w-[172px]" /> {/* spacer for Frontend box + arrow */}
               <div className="flex flex-col items-center">
-                <div className="w-px h-6 bg-gradient-to-b from-emerald-500/60 to-rose-500/60" />
+                <div className="w-px h-6 bg-gradient-to-b from-[#00f0ff]/60 to-rose-500/60" />
                 <div className="w-2 h-2 rounded-full bg-rose-500/80 shadow-[0_0_8px_rgba(244,63,94,.5)]" />
               </div>
             </div>
@@ -372,7 +372,7 @@ export default function EngineeringPage() {
           {/* API Response Times – LineChart */}
           <section className="border border-border bg-card/50 backdrop-blur rounded-xl p-6">
             <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-4 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-emerald-400" />
+              <Activity className="w-4 h-4 text-[#00f0ff]" />
               API Response Latency
             </h2>
             <p className="text-xs text-muted-foreground mb-4 font-mono">
@@ -404,8 +404,8 @@ export default function EngineeringPage() {
                   <Legend
                     wrapperStyle={{ fontSize: 10, fontFamily: "monospace" }}
                   />
-                  <Line type="monotone" dataKey="route" stroke="#10b981" strokeWidth={2} dot={false} name="/route" />
-                  <Line type="monotone" dataKey="predict" stroke="#f59e0b" strokeWidth={2} dot={false} name="/predict" />
+                  <Line type="monotone" dataKey="route" stroke="#00f0ff" strokeWidth={2} dot={false} name="/route" />
+                  <Line type="monotone" dataKey="predict" stroke="#ffb829" strokeWidth={2} dot={false} name="/predict" />
                   <Line type="monotone" dataKey="cities" stroke="#38bdf8" strokeWidth={2} dot={false} name="/cities" />
                   <Line type="monotone" dataKey="stats" stroke="#a78bfa" strokeWidth={2} dot={false} name="/stats" />
                 </LineChart>
@@ -417,13 +417,13 @@ export default function EngineeringPage() {
         {/* Code Statistics Panel */}
         <section className="border border-border bg-card/50 backdrop-blur rounded-xl p-6">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-muted-foreground mb-6 flex items-center gap-2">
-            <Code2 className="w-4 h-4 text-emerald-500" />
+            <Code2 className="w-4 h-4 text-[#8052ff]" />
             Codebase Statistics
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <StatBlock label="Total Lines of Code" value="48,217" sub="C++ / Python / TypeScript" />
             <StatBlock label="Test Coverage" value="94.2%" sub="1,847 test cases" />
-            <StatBlock label="Algorithms" value="7" sub="Dijkstra, A*, BFS, CH, ALT, Bidirectional, Greedy" />
+            <StatBlock label="Algorithms" value="5" sub="Hybrid A*, RRT*, Neural Planner, MPC, D* Lite" />
             <StatBlock label="Cities Supported" value="12" sub="NYC, Paris, Tokyo, London, Berlin, Mumbai…" />
           </div>
         </section>
@@ -490,8 +490,8 @@ function ArchBox({
 
 function ArrowConnector() {
   return (
-    <div className="flex items-center gap-0.5 text-emerald-500/60">
-      <div className="w-6 h-px bg-emerald-500/40" />
+    <div className="flex items-center gap-0.5 text-[#8052ff]/60">
+      <div className="w-6 h-px bg-[#00f0ff]/40" />
       <ArrowRight className="w-3 h-3" />
     </div>
   );
@@ -511,8 +511,10 @@ function StatBlock({
       <span className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
         {label}
       </span>
-      <span className="text-2xl font-bold font-mono text-emerald-400">{value}</span>
+      <span className="text-2xl font-bold font-mono text-[#00f0ff]">{value}</span>
       <span className="text-[10px] text-muted-foreground">{sub}</span>
     </div>
   );
 }
+
+

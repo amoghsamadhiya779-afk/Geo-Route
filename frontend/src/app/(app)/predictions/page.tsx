@@ -217,14 +217,14 @@ export default function PredictionsPage() {
 
   if (!mounted) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-[#0a0a0a]">
-        <Compass className="w-8 h-8 text-emerald-500 animate-spin" />
+      <div className="h-full w-full flex items-center justify-center bg-[#000000]">
+        <Compass className="w-8 h-8 text-[#00f0ff] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="h-full w-full flex bg-[#0a0a0a] relative overflow-hidden">
+    <div className="h-full w-full flex bg-[#000000] relative overflow-hidden">
       {/* Background grid */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -239,14 +239,14 @@ export default function PredictionsPage() {
       <aside className="w-80 shrink-0 border-r border-border bg-card/50 backdrop-blur-xl z-10 flex flex-col overflow-y-auto">
         <div className="p-6 border-b border-border">
           <div className="flex items-center gap-3 mb-1">
-            <div className="w-9 h-9 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-              <Brain className="w-5 h-5 text-emerald-500" />
+            <div className="w-9 h-9 rounded-xl bg-[#8052ff]/10 border border-[#8052ff]/20 flex items-center justify-center">
+              <Brain className="w-5 h-5 text-[#8052ff]" />
             </div>
             <div>
               <h2 className="text-sm font-semibold tracking-tight">
                 Prediction Engine
               </h2>
-              <p className="text-[10px] font-mono text-emerald-500">
+              <p className="text-[10px] font-mono text-[#00f0ff]">
                 TRENT-ML v4.2 ONLINE
               </p>
             </div>
@@ -270,7 +270,7 @@ export default function PredictionsPage() {
                 />
               </button>
               {cityDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-[#111] border border-border rounded-lg shadow-2xl z-50 max-h-52 overflow-y-auto">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-[#111] border border-border rounded-xl shadow-2xl z-50 max-h-52 overflow-y-auto">
                   {CITIES.map((c) => (
                     <button
                       key={c}
@@ -278,9 +278,9 @@ export default function PredictionsPage() {
                         setActiveCity(c.toLowerCase().replace(" ", "-"));
                         setCityDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-3 py-2 text-sm font-mono hover:bg-emerald-500/10 transition-colors ${
+                      className={`w-full text-left px-3 py-2 text-sm font-mono hover:bg-white/[0.02] transition-colors ${
                         c === displayCity
-                          ? "text-emerald-400 bg-emerald-500/5"
+                          ? "text-[#00f0ff] bg-[#8052ff]/10"
                           : "text-foreground"
                       }`}
                     >
@@ -303,11 +303,11 @@ export default function PredictionsPage() {
               max={48}
               value={futureHours}
               onChange={(e) => setFutureHours(+e.target.value)}
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full accent-[#00f0ff] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
               <span>1h</span>
-              <span className="text-emerald-400 text-xs font-semibold">
+              <span className="text-[#00f0ff] text-xs font-semibold">
                 {futureHours}h
               </span>
               <span>48h</span>
@@ -324,16 +324,16 @@ export default function PredictionsPage() {
                 <button
                   key={m}
                   onClick={() => setModel(m)}
-                  className={`w-full text-left px-3 py-2 rounded-lg border text-xs font-mono transition-all ${
+                  className={`w-full text-left px-3 py-2 rounded-xl border text-xs font-mono transition-all ${
                     m === model
-                      ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-400"
-                      : "border-border bg-secondary/20 text-muted-foreground hover:bg-secondary/40"
+                      ? "border-[#8052ff]/50 bg-[#8052ff]/10 text-[#00f0ff]"
+                      : "border-border bg-secondary/20 text-muted-foreground hover:bg-white/[0.02]"
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     <div
                       className={`w-2 h-2 rounded-full ${
-                        m === model ? "bg-emerald-500" : "bg-muted-foreground/30"
+                        m === model ? "bg-[#00f0ff]" : "bg-muted-foreground/30"
                       }`}
                     />
                     {m}
@@ -354,11 +354,11 @@ export default function PredictionsPage() {
               max={99}
               value={confidence}
               onChange={(e) => setConfidence(+e.target.value)}
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full accent-[#00f0ff] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
               <span>50%</span>
-              <span className="text-emerald-400 text-xs font-semibold">
+              <span className="text-[#00f0ff] text-xs font-semibold">
                 {confidence}%
               </span>
               <span>99%</span>
@@ -369,7 +369,7 @@ export default function PredictionsPage() {
           <button
             onClick={handleGenerate}
             disabled={isGenerating}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white text-sm font-semibold transition-all shadow-lg shadow-emerald-900/30"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-[#8052ff] to-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)] hover:opacity-90 disabled:opacity-60 text-white text-sm font-semibold transition-all"
           >
             {isGenerating ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
@@ -383,14 +383,14 @@ export default function PredictionsPage() {
           <div className="mt-auto pt-4 border-t border-border space-y-2">
             <div className="flex justify-between text-[10px] font-mono">
               <span className="text-muted-foreground">Engine Status</span>
-              <span className="text-emerald-400 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-[#00f0ff] flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] animate-pulse" />
                 ACTIVE
               </span>
             </div>
             <div className="flex justify-between text-[10px] font-mono">
               <span className="text-muted-foreground">GPU Cluster</span>
-              <span className="text-sky-400">4× A100 80GB</span>
+              <span className="text-[#8052ff]">4× A100 80GB</span>
             </div>
             <div className="flex justify-between text-[10px] font-mono">
               <span className="text-muted-foreground">Last Trained</span>
@@ -407,17 +407,17 @@ export default function PredictionsPage() {
           <header className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold tracking-tight flex items-center gap-3">
-                <Compass className="w-6 h-6 text-emerald-500" />
+                <Compass className="w-6 h-6 text-[#8052ff]" />
                 Predictive Models
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Time-series traffic prediction for{" "}
-                <span className="text-emerald-400 font-mono">{displayCity}</span> •{" "}
+                <span className="text-[#00f0ff] font-mono">{displayCity}</span> •{" "}
                 <span className="font-mono">{model}</span>
               </p>
             </div>
             <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00f0ff] animate-pulse" />
               LIVE FEED
             </div>
           </header>
@@ -466,12 +466,12 @@ export default function PredictionsPage() {
                 <AreaChart data={slicedTraffic} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="gradPredicted" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.35} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#8052ff" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#00f0ff" stopOpacity={0.0} />
                     </linearGradient>
                     <linearGradient id="gradBand" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.08} />
-                      <stop offset="95%" stopColor="#10b981" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.08} />
+                      <stop offset="95%" stopColor="#00f0ff" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="#222" />
@@ -505,7 +505,7 @@ export default function PredictionsPage() {
                   <Area
                     type="monotone"
                     dataKey="predicted"
-                    stroke="#10b981"
+                    stroke="#00f0ff"
                     strokeWidth={2}
                     fill="url(#gradPredicted)"
                     name="Predicted Density"
@@ -557,7 +557,7 @@ export default function PredictionsPage() {
                     yAxisId="left"
                     type="monotone"
                     dataKey="travelTime"
-                    stroke="#38bdf8"
+                    stroke="#8052ff"
                     strokeWidth={2}
                     dot={false}
                     name="Travel Time (min)"
@@ -566,7 +566,7 @@ export default function PredictionsPage() {
                     yAxisId="right"
                     type="monotone"
                     dataKey="fuelCost"
-                    stroke="#f59e0b"
+                    stroke="#00f0ff"
                     strokeWidth={2}
                     dot={false}
                     name="Fuel Cost (USD)"
@@ -595,13 +595,13 @@ export default function PredictionsPage() {
                   />
                   <Bar
                     dataKey="rmse"
-                    fill="#f43f5e"
+                    fill="#8052ff"
                     radius={[4, 4, 0, 0]}
                     name="RMSE"
                   />
                   <Bar
                     dataKey="mae"
-                    fill="#a78bfa"
+                    fill="#00f0ff"
                     radius={[4, 4, 0, 0]}
                     name="MAE"
                   />
@@ -640,7 +640,7 @@ export default function PredictionsPage() {
                   <Line
                     type="monotone"
                     dataKey="predicted"
-                    stroke="#10b981"
+                    stroke="#00f0ff"
                     strokeWidth={2}
                     dot={false}
                     name="Predicted (Model)"

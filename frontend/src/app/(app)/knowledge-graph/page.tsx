@@ -51,7 +51,7 @@ interface EdgeData {
 // Custom Node Component
 const CustomIntersectionNode = ({ data }: { data: IntersectionData }) => {
   const getCongestionColor = (c: number) => {
-    if (c < 0.3) return "bg-emerald-500/20 border-emerald-500 text-emerald-400";
+    if (c < 0.3) return "bg-[#8052ff]/20 border-[#00f0ff] text-[#00f0ff]";
     if (c < 0.7) return "bg-amber-500/20 border-amber-500 text-amber-400";
     return "bg-rose-500/20 border-rose-500 text-rose-400";
   };
@@ -60,7 +60,7 @@ const CustomIntersectionNode = ({ data }: { data: IntersectionData }) => {
 
   return (
     <div
-      className={`px-3 py-2 rounded-lg border backdrop-blur-md shadow-lg flex flex-col min-w-[140px] transition-all hover:scale-105 ${getCongestionColor(
+      className={`px-3 py-2 rounded-2xl border backdrop-blur-md shadow-lg flex flex-col min-w-[140px] transition-all hover:scale-105 ${getCongestionColor(
         data.congestion
       )} ${isHub ? "border-2 shadow-primary/20 ring-1 ring-primary/30" : ""}`}
     >
@@ -82,7 +82,7 @@ const CustomIntersectionNode = ({ data }: { data: IntersectionData }) => {
               ? "bg-rose-500 animate-ping"
               : data.congestion > 0.3
               ? "bg-amber-500"
-              : "bg-emerald-500"
+              : "bg-[#00f0ff]"
           }`}
         />
       </div>
@@ -175,8 +175,8 @@ const initialEdges: Edge[] = [
     source: "N1",
     target: "N3",
     label: "1,150m (1.1x delay)",
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#f59e0b" },
+    style: { stroke: "#ffb829", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#ffb829" },
     data: { distanceM: 1150, baseSpeedKmh: 45, currentSpeedKmh: 38, trafficFactor: 1.18 },
   },
   {
@@ -184,8 +184,8 @@ const initialEdges: Edge[] = [
     source: "N2",
     target: "N4",
     label: "1,200m (1.0x delay)",
-    style: { stroke: "#10b981", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#10b981" },
+    style: { stroke: "#00f0ff", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#00f0ff" },
     data: { distanceM: 1200, baseSpeedKmh: 50, currentSpeedKmh: 50, trafficFactor: 1.0 },
   },
   {
@@ -193,8 +193,8 @@ const initialEdges: Edge[] = [
     source: "N3",
     target: "N4",
     label: "1,500m (1.0x delay)",
-    style: { stroke: "#10b981", strokeWidth: 1.5 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#10b981" },
+    style: { stroke: "#00f0ff", strokeWidth: 1.5 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#00f0ff" },
     data: { distanceM: 1500, baseSpeedKmh: 50, currentSpeedKmh: 48, trafficFactor: 1.04 },
   },
   {
@@ -203,8 +203,8 @@ const initialEdges: Edge[] = [
     target: "N5",
     label: "850m (1.3x delay)",
     animated: true,
-    style: { stroke: "#f59e0b", strokeWidth: 2 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#f59e0b" },
+    style: { stroke: "#ffb829", strokeWidth: 2 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#ffb829" },
     data: { distanceM: 850, baseSpeedKmh: 40, currentSpeedKmh: 28, trafficFactor: 1.4 },
   },
   {
@@ -212,8 +212,8 @@ const initialEdges: Edge[] = [
     source: "N4",
     target: "N5",
     label: "1,400m (1.0x delay)",
-    style: { stroke: "#10b981", strokeWidth: 1.5 },
-    markerEnd: { type: MarkerType.ArrowClosed, color: "#10b981" },
+    style: { stroke: "#00f0ff", strokeWidth: 1.5 },
+    markerEnd: { type: MarkerType.ArrowClosed, color: "#00f0ff" },
     data: { distanceM: 1400, baseSpeedKmh: 50, currentSpeedKmh: 49, trafficFactor: 1.02 },
   },
 ];
@@ -338,7 +338,7 @@ export default function KnowledgeGraphPage() {
             animated: updatedEdgeData.trafficFactor > 1.2,
             style: {
               ...e.style,
-              stroke: updatedEdgeData.trafficFactor > 1.8 ? "#f43f5e" : updatedEdgeData.trafficFactor > 1.2 ? "#f59e0b" : "#10b981",
+              stroke: updatedEdgeData.trafficFactor > 1.8 ? "#f43f5e" : updatedEdgeData.trafficFactor > 1.2 ? "#ffb829" : "#00f0ff",
               strokeWidth: updatedEdgeData.trafficFactor > 1.8 ? 3 : 2,
             },
             data: updatedEdgeData,
@@ -352,7 +352,7 @@ export default function KnowledgeGraphPage() {
 
   if (!mounted) {
     return (
-      <div className="h-full w-full flex items-center justify-center bg-[#0a0a0a] text-muted-foreground font-mono text-sm">
+      <div className="h-full w-full flex items-center justify-center bg-[#000000] text-muted-foreground font-mono text-sm">
         <Zap className="w-5 h-5 animate-pulse mr-2 text-primary" />
         LOADING KNOWLEDGE GRAPH CANVAS...
       </div>
@@ -360,11 +360,11 @@ export default function KnowledgeGraphPage() {
   }
 
   return (
-    <div className="h-full w-full flex bg-[#0a0a0a] relative overflow-hidden text-foreground">
+    <div className="h-full w-full flex bg-[#000000] relative overflow-hidden text-foreground">
       {/* Left Control / Search Panel */}
       <div className="w-80 border-r border-border bg-card/60 backdrop-blur-xl flex flex-col shrink-0 z-10">
         <div className="p-4 border-b border-border">
-          <div className="flex items-center space-x-2 text-emerald-500 mb-2">
+          <div className="flex items-center space-x-2 text-[#8052ff] mb-2">
             <GitFork className="w-5 h-5" />
             <h1 className="font-bold tracking-tight text-lg">Routing Network</h1>
           </div>
@@ -382,12 +382,12 @@ export default function KnowledgeGraphPage() {
               placeholder="Search intersection ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-secondary/50 border border-border rounded-md pl-9 pr-4 py-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent text-foreground"
+              className="w-full bg-secondary/50 border border-border rounded-xl pl-9 pr-4 py-2 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent text-foreground"
             />
           </div>
 
           {/* Congestion slider */}
-          <div className="space-y-2 border border-border/50 p-3 rounded-lg bg-secondary/20">
+          <div className="space-y-2 border border-border/50 p-3 rounded-2xl bg-secondary/20">
             <div className="flex justify-between items-center text-xs font-mono">
               <span className="text-muted-foreground flex items-center gap-1">
                 <Sliders className="w-3.5 h-3.5" />
@@ -402,7 +402,7 @@ export default function KnowledgeGraphPage() {
               step="0.1"
               value={congestionFilter}
               onChange={(e) => setCongestionFilter(parseFloat(e.target.value))}
-              className="w-full h-1 bg-secondary rounded-lg appearance-none cursor-pointer accent-primary"
+              className="w-full h-1 bg-secondary rounded-2xl appearance-none cursor-pointer accent-primary"
             />
             <div className="flex justify-between text-[10px] text-muted-foreground font-mono">
               <span>All Nodes</span>
@@ -445,7 +445,7 @@ export default function KnowledgeGraphPage() {
           </h4>
           <div className="flex items-center justify-between text-[10px] font-mono">
             <div className="flex items-center gap-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/20 border border-emerald-500" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#8052ff]/20 border border-[#00f0ff]" />
               <span>Low (&lt;30%)</span>
             </div>
             <div className="flex items-center gap-1">
@@ -482,8 +482,8 @@ export default function KnowledgeGraphPage() {
             nodeStrokeColor={(n) => {
               const nd = n.data as any;
               if (nd?.congestion > 0.7) return "#f43f5e";
-              if (nd?.congestion > 0.3) return "#f59e0b";
-              return "#10b981";
+              if (nd?.congestion > 0.3) return "#ffb829";
+              return "#00f0ff";
             }}
             nodeColor={(n) => {
               const nd = n.data as any;
@@ -562,7 +562,7 @@ export default function KnowledgeGraphPage() {
                           ? "text-rose-400"
                           : selectedElement.data.congestion > 0.3
                           ? "text-amber-400"
-                          : "text-emerald-400"
+                          : "text-[#00f0ff]"
                       }`}
                     >
                       {(selectedElement.data.congestion * 100).toFixed(0)}%
@@ -578,7 +578,7 @@ export default function KnowledgeGraphPage() {
                     <span className="text-[10px] text-muted-foreground">SIGNAL CONTROL:</span>
                     <span
                       className={`font-semibold ${
-                        selectedElement.data.activeSignals ? "text-emerald-400" : "text-muted-foreground"
+                        selectedElement.data.activeSignals ? "text-[#00f0ff]" : "text-muted-foreground"
                       }`}
                     >
                       {selectedElement.data.activeSignals ? "INTELLIGENT" : "FIXED"}
@@ -589,7 +589,7 @@ export default function KnowledgeGraphPage() {
                 <div className="mt-auto pt-6">
                   <button
                     onClick={() => handleOptimizeNode(selectedElement.id)}
-                    className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2 rounded flex items-center justify-center gap-2 transition-colors cursor-pointer text-xs"
+                    className="w-full bg-[#8052ff] hover:bg-[#00f0ff] text-white font-medium py-2 rounded flex items-center justify-center gap-2 transition-colors cursor-pointer text-xs"
                   >
                     <Activity className="w-3.5 h-3.5 animate-pulse" />
                     Simulate Signal Optimization
@@ -638,7 +638,7 @@ export default function KnowledgeGraphPage() {
                           ? "text-rose-400 animate-pulse"
                           : selectedElement.data.trafficFactor > 1.2
                           ? "text-amber-400"
-                          : "text-emerald-400"
+                          : "text-[#00f0ff]"
                       }`}
                     >
                       {selectedElement.data.currentSpeedKmh} km/h
@@ -653,7 +653,7 @@ export default function KnowledgeGraphPage() {
                           ? "text-rose-400"
                           : selectedElement.data.trafficFactor > 1.2
                           ? "text-amber-400"
-                          : "text-emerald-400"
+                          : "text-[#00f0ff]"
                       }`}
                     >
                       {selectedElement.data.trafficFactor.toFixed(2)}x
@@ -668,7 +668,7 @@ export default function KnowledgeGraphPage() {
                   </div>
                   <p className="text-[10px] text-muted-foreground leading-relaxed">
                     {selectedElement.data.trafficFactor > 1.8
-                      ? "High traffic congestion detected. Astar weights are penalty-inflated. Routing algorithms will actively divert around this segment."
+                      ? "High traffic congestion detected. Hybrid A* kinematic weights are penalty-inflated. Routing algorithms will actively divert around this segment."
                       : selectedElement.data.trafficFactor > 1.2
                       ? "Moderate delay. Commuter flow throttling active. Peak-hour overhead applied."
                       : "Optimal free-flow conditions. High-speed routing path."}
@@ -682,3 +682,5 @@ export default function KnowledgeGraphPage() {
     </div>
   );
 }
+
+

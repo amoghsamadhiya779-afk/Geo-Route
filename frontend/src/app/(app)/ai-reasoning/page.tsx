@@ -29,7 +29,7 @@ import {
 
 //  Types 
 
-type Algorithm = "A*" | "Dijkstra" | "Bidirectional A*" | "Contraction Hierarchies";
+type Algorithm = "Hybrid A*" | "RRT*" | "Neural Planner" | "MPC";
 
 interface TimelineStep {
   id: number;
@@ -48,10 +48,10 @@ interface HeuristicNode {
 
 interface RacePoint {
   step: number;
-  "A*": number;
-  Dijkstra: number;
-  "Bidirectional A*": number;
-  "Contraction Hierarchies": number;
+  "Hybrid A*": number;
+  "RRT*": number;
+  "Neural Planner": number;
+  MPC: number;
 }
 
 interface KPI {
@@ -99,8 +99,8 @@ function generateTimeline(algo: Algorithm, depth: number): TimelineStep[] {
     {
       id: 3,
       title: "Path Cost Comparison",
-      description: `A* cost: ${r(6, 12)} | Dijkstra cost: ${r(10, 18)}`,
-      detail: `A* explored ${r(40, 65, 0)}% fewer nodes • Bidirectional met at midpoint (${r(40.72, 40.78, 4)}, ${r(-74.0, -73.96, 4)})`,
+      description: `Hybrid A* cost: ${r(6, 12)} | RRT* cost: ${r(10, 18)}`,
+      detail: `Hybrid A* explored ${r(40, 65, 0)}% fewer nodes • RRT* kinematically smoothed paths at midpoint (${r(40.72, 40.78, 4)}, ${r(-74.0, -73.96, 4)})`,
       status: "considered",
     },
     {
@@ -140,10 +140,10 @@ function generateRaceData(): RacePoint[] {
     c += Math.round(r(5, 40, 0));
     return {
       step: (i + 1) * 5,
-      "A*": a,
-      Dijkstra: d,
-      "Bidirectional A*": b,
-      "Contraction Hierarchies": c,
+      "Hybrid A*": a,
+      "RRT*": d,
+      "Neural Planner": b,
+      MPC: c,
     };
   });
 }
@@ -155,42 +155,42 @@ function generateKPIs(): KPI[] {
       value: `${r(91, 99.5)}%`,
       delta: `+${r(0.5, 3.2)}% vs baseline`,
       icon: Brain,
-      color: "text-emerald-400",
+      color: "text-[#00f0ff]",
     },
     {
       label: "Heuristic Accuracy",
       value: `${r(87, 97)}%`,
       delta: `${r(0.2, 1.8)}% margin`,
       icon: TrendingUp,
-      color: "text-sky-400",
+      color: "text-[#8052ff]",
     },
     {
       label: "Path Optimality Score",
       value: `${r(0.94, 0.995, 3)}`,
       delta: `Top ${r(1, 5, 0)}% percentile`,
       icon: Zap,
-      color: "text-amber-400",
+      color: "text-[#ffb829]",
     },
     {
       label: "Computation Savings",
       value: `${r(38, 72, 1)}%`,
       delta: `${r(120, 480, 0)}ms saved`,
       icon: Cpu,
-      color: "text-rose-400",
+      color: "text-[#15846e]",
     },
   ];
 }
 
 function generateSummary(algo: Algorithm): DecisionSummary {
   const reasons: Record<Algorithm, string> = {
-    "A*":
-      "A* leveraged admissible Haversine heuristic to prune 62% of the search space while maintaining optimality guarantees.",
-    Dijkstra:
-      "Dijkstra provided guaranteed shortest path via exhaustive exploration—selected due to negative-weight edges in the subgraph.",
-    "Bidirectional A*":
-      "Bidirectional search from both endpoints met at a central junction, reducing explored nodes by 58% vs unidirectional A*.",
-    "Contraction Hierarchies":
-      "CH used precomputed node ordering to skip low-importance junctions, achieving sub-millisecond query time on a 2.4M-node graph.",
+    "Hybrid A*":
+      "Hybrid A* leveraged kinematic constraints and continuous coordinates to prune 62% of un-drivable search space while maintaining optimality.",
+    "RRT*":
+      "RRT* rapidly explored the highly dynamic search space, asymptotically finding the optimal kinodynamic path in a heavily constrained zone.",
+    "Neural Planner":
+      "Deep Reinforcement Learning planner bypassed explicit graph search, predicting the optimal trajectory based on learned fleet behaviors with 58% fewer computations.",
+    MPC:
+      "Model Predictive Control continuously replanned over a rolling horizon, adapting sub-millisecond to sudden dynamic obstacles.",
   };
   return {
     winner: algo,
@@ -239,20 +239,20 @@ const statusConfig: Record<
 > = {
   optimal: {
     icon: CheckCircle,
-    color: "text-emerald-400",
-    bg: "border-emerald-500/40 bg-emerald-500/5",
+    color: "text-[#00f0ff]",
+    bg: "border-[#00f0ff]/40 bg-[#00f0ff]/5",
     label: "OPTIMAL",
   },
   considered: {
     icon: AlertCircle,
-    color: "text-amber-400",
-    bg: "border-amber-500/40 bg-amber-500/5",
+    color: "text-[#ffb829]",
+    bg: "border-[#ffb829]/40 bg-[#ffb829]/5",
     label: "CONSIDERED",
   },
   rejected: {
     icon: XCircle,
-    color: "text-rose-400",
-    bg: "border-rose-500/40 bg-rose-500/5",
+    color: "text-[#8052ff]",
+    bg: "border-[#8052ff]/40 bg-[#8052ff]/5",
     label: "REJECTED",
   },
 };
@@ -261,7 +261,7 @@ const statusConfig: Record<
 
 export default function AiReasoningPage() {
   const [mounted, setMounted] = useState(false);
-  const [selectedAlgo, setSelectedAlgo] = useState<Algorithm>("A*");
+  const [selectedAlgo, setSelectedAlgo] = useState<Algorithm>("Hybrid A*");
   const [heuristicWeight, setHeuristicWeight] = useState(1.0);
   const [decisionDepth, setDecisionDepth] = useState(4);
   const [analysisKey, setAnalysisKey] = useState(0);
@@ -277,11 +277,11 @@ export default function AiReasoningPage() {
   useEffect(() => {
     setMounted(true);
     // initial data
-    setTimeline(generateTimeline("A*", 4));
+    setTimeline(generateTimeline("Hybrid A*", 4));
     setHeuristicData(generateHeuristicData());
     setRaceData(generateRaceData());
     setKPIs(generateKPIs());
-    setSummary(generateSummary("A*"));
+    setSummary(generateSummary("Hybrid A*"));
   }, []);
 
   // Live micro-update: KPIs shimmer every 5s
@@ -310,14 +310,14 @@ export default function AiReasoningPage() {
   if (!mounted) return null;
 
   const algorithms: Algorithm[] = [
-    "A*",
-    "Dijkstra",
-    "Bidirectional A*",
-    "Contraction Hierarchies",
+    "Hybrid A*",
+    "RRT*",
+    "Neural Planner",
+    "MPC",
   ];
 
   return (
-    <div className="h-full w-full flex bg-[#0a0a0a] overflow-hidden relative">
+    <div className="h-full w-full flex bg-[#000000] overflow-hidden relative">
       {/* Dot grid background */}
       <div
         className="absolute inset-0 opacity-[0.07] pointer-events-none"
@@ -332,8 +332,8 @@ export default function AiReasoningPage() {
       <aside className="w-80 shrink-0 border-r border-border bg-card/50 backdrop-blur-xl p-6 flex flex-col gap-6 overflow-y-auto z-10">
         {/* Header */}
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-            <Brain className="w-5 h-5 text-emerald-400" />
+          <div className="p-2 rounded-xl bg-[#8052ff]/10 border border-[#8052ff]/20">
+            <Brain className="w-5 h-5 text-[#8052ff]" />
           </div>
           <div>
             <h2 className="font-semibold text-sm tracking-tight">
@@ -357,10 +357,10 @@ export default function AiReasoningPage() {
               <button
                 key={algo}
                 onClick={() => setSelectedAlgo(algo)}
-                className={`w-full text-left px-3 py-2 rounded-md text-sm transition-all font-mono ${
+                className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all font-mono ${
                   selectedAlgo === algo
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "text-muted-foreground hover:bg-secondary/50 border border-transparent"
+                    ? "bg-[#8052ff]/15 text-[#00f0ff] border border-[#8052ff]/30"
+                    : "text-muted-foreground hover:bg-white/[0.02] border border-transparent"
                 }`}
               >
                 <span className="flex items-center gap-2">
@@ -387,11 +387,11 @@ export default function AiReasoningPage() {
               onChange={(e) =>
                 setHeuristicWeight(parseFloat(e.target.value))
               }
-              className="w-full accent-emerald-500 cursor-pointer"
+              className="w-full accent-[#00f0ff] cursor-pointer"
             />
             <div className="flex justify-between text-[10px] font-mono text-muted-foreground">
               <span>0.5</span>
-              <span className="text-emerald-400 font-semibold">
+              <span className="text-[#00f0ff] font-semibold">
                 {heuristicWeight.toFixed(1)}
               </span>
               <span>2.0</span>
@@ -409,10 +409,10 @@ export default function AiReasoningPage() {
               <button
                 key={d}
                 onClick={() => setDecisionDepth(d)}
-                className={`flex-1 py-1.5 text-xs font-mono rounded-md transition-all ${
+                className={`flex-1 py-1.5 text-xs font-mono rounded-xl transition-all ${
                   decisionDepth === d
-                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                    : "text-muted-foreground border border-border hover:bg-secondary/50"
+                    ? "bg-[#8052ff]/15 text-[#00f0ff] border border-[#8052ff]/30"
+                    : "text-muted-foreground border border-border hover:bg-white/[0.02]"
                 }`}
               >
                 L{d}
@@ -425,7 +425,7 @@ export default function AiReasoningPage() {
         <button
           onClick={handleAnalyze}
           disabled={isAnalyzing}
-          className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#8052ff] to-[#00f0ff] shadow-[0_0_15px_rgba(0,240,255,0.2)] hover:opacity-90 text-white font-medium text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
         >
           {isAnalyzing ? (
             <>
@@ -449,11 +449,11 @@ export default function AiReasoningPage() {
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="border border-emerald-500/20 bg-emerald-500/5 rounded-lg p-4 space-y-3"
+            className="border border-[#00f0ff]/20 bg-[#00f0ff]/5 rounded-xl p-4 space-y-3"
           >
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-semibold uppercase tracking-wider text-emerald-400">
+              <CheckCircle className="w-4 h-4 text-[#00f0ff]" />
+              <span className="text-xs font-semibold uppercase tracking-wider text-[#00f0ff]">
                 Winner: {summary.winner}
               </span>
             </div>
@@ -461,22 +461,22 @@ export default function AiReasoningPage() {
               {summary.reason}
             </p>
             <div className="grid grid-cols-2 gap-2 pt-1">
-              <div className="text-center p-2 rounded bg-black/30 border border-border/50">
+              <div className="text-center p-2 rounded-lg bg-black/30 border border-border/50">
                 <p className="text-[10px] text-muted-foreground">Nodes</p>
                 <p className="text-sm font-mono text-white">
                   {summary.nodesExplored.toLocaleString()}
                 </p>
               </div>
-              <div className="text-center p-2 rounded bg-black/30 border border-border/50">
+              <div className="text-center p-2 rounded-lg bg-black/30 border border-border/50">
                 <p className="text-[10px] text-muted-foreground">Time Saved</p>
                 <p className="text-sm font-mono text-white">
                   {summary.timeSaved}
                 </p>
               </div>
             </div>
-            <div className="text-center p-2 rounded bg-black/30 border border-border/50">
+            <div className="text-center p-2 rounded-lg bg-black/30 border border-border/50">
               <p className="text-[10px] text-muted-foreground">Optimal Path Cost</p>
-              <p className="text-sm font-mono text-emerald-400">
+              <p className="text-sm font-mono text-[#00f0ff]">
                 {summary.pathCost} km
               </p>
             </div>
@@ -494,7 +494,7 @@ export default function AiReasoningPage() {
             </h1>
             <p className="text-sm text-muted-foreground">
               Inspect why the routing engine selected{" "}
-              <span className="text-emerald-400 font-mono">{selectedAlgo}</span>{" "}
+              <span className="text-[#00f0ff] font-mono">{selectedAlgo}</span>{" "}
               with ε={heuristicWeight.toFixed(1)} at depth L{decisionDepth}
             </p>
           </header>
@@ -510,16 +510,17 @@ export default function AiReasoningPage() {
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.35 }}
-                    className="border border-border bg-card/50 backdrop-blur rounded-lg p-5"
+                    className="border border-border/50 bg-transparent hover:bg-white/[0.02] transition-colors rounded-2xl p-5 relative overflow-hidden group"
                   >
+                    <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#8052ff]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs text-muted-foreground font-medium">
+                      <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">
                         {kpi.label}
                       </span>
                       <Icon className={`w-4 h-4 ${kpi.color} opacity-80`} />
                     </div>
-                    <p className="text-2xl font-bold font-mono">{kpi.value}</p>
-                    <p className="text-[11px] font-mono text-emerald-500 mt-1">
+                    <p className="text-3xl font-extralight font-sans">{kpi.value}</p>
+                    <p className="text-[11px] font-mono text-[#00f0ff] mt-1">
                       {kpi.delta}
                     </p>
                   </motion.div>
@@ -534,20 +535,20 @@ export default function AiReasoningPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="border border-border bg-card/50 backdrop-blur rounded-lg p-6"
+            className="border border-border bg-transparent rounded-2xl p-6"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="font-semibold flex items-center gap-2 text-sm">
-                <GitBranch className="w-4 h-4 text-emerald-400" />
+                <GitBranch className="w-4 h-4 text-[#8052ff]" />
                 Decision Timeline
               </h2>
-              <span className="text-[10px] font-mono text-muted-foreground uppercase">
+              <span className="text-[10px] font-mono text-[#00f0ff] uppercase">
                 {selectedAlgo} • Depth L{decisionDepth}
               </span>
             </div>
             <div className="relative ml-4">
               {/* Vertical connector line */}
-              <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border" />
+              <div className="absolute left-[11px] top-2 bottom-2 w-px bg-border/50" />
 
               <div className="space-y-1">
                 {timeline.map((step, idx) => {
@@ -559,17 +560,17 @@ export default function AiReasoningPage() {
                       initial={{ opacity: 0, x: -12 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.1, duration: 0.35 }}
-                      className={`relative flex gap-4 p-4 rounded-lg border ${cfg.bg} ml-6`}
+                      className={`relative flex gap-4 p-4 rounded-xl border ${cfg.bg} ml-6`}
                     >
                       {/* Timeline dot */}
                       <div className="absolute -left-[33px] top-5">
                         <div
-                          className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center bg-[#0a0a0a] ${
+                          className={`w-[22px] h-[22px] rounded-full border-2 flex items-center justify-center bg-[#000000] ${
                             step.status === "optimal"
-                              ? "border-emerald-500"
+                              ? "border-[#00f0ff]"
                               : step.status === "considered"
-                              ? "border-amber-500"
-                              : "border-rose-500"
+                              ? "border-[#ffb829]"
+                              : "border-[#8052ff]"
                           }`}
                         >
                           <Icon className={`w-3 h-3 ${cfg.color}`} />
@@ -584,7 +585,7 @@ export default function AiReasoningPage() {
                           <span
                             className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
                               step.status === "optimal"
-                                ? "bg-emerald-500/20 text-emerald-400"
+                                ? "bg-emerald-500/20 text-[#00f0ff]"
                                 : step.status === "considered"
                                 ? "bg-amber-500/20 text-amber-400"
                                 : "bg-rose-500/20 text-rose-400"
@@ -683,7 +684,7 @@ export default function AiReasoningPage() {
                         return (
                           <Cell
                             key={`cell-${index}`}
-                            fill={entry.fn === minFn ? "#f59e0b" : "#6366f1"}
+                            fill={entry.fn === minFn ? "#00f0ff" : "#8052ff"}
                           />
                         );
                       })}
@@ -744,32 +745,32 @@ export default function AiReasoningPage() {
                     />
                     <Line
                       type="monotone"
-                      dataKey="A*"
-                      stroke="#10b981"
+                      dataKey="Hybrid A*"
+                      stroke="#00f0ff"
                       strokeWidth={2}
                       dot={false}
                       activeDot={{ r: 4 }}
                     />
                     <Line
                       type="monotone"
-                      dataKey="Dijkstra"
-                      stroke="#f43f5e"
+                      dataKey="RRT*"
+                      stroke="#8052ff"
                       strokeWidth={2}
                       dot={false}
                       activeDot={{ r: 4 }}
                     />
                     <Line
                       type="monotone"
-                      dataKey="Bidirectional A*"
-                      stroke="#38bdf8"
+                      dataKey="Neural Planner"
+                      stroke="#ffb829"
                       strokeWidth={2}
                       dot={false}
                       activeDot={{ r: 4 }}
                     />
                     <Line
                       type="monotone"
-                      dataKey="Contraction Hierarchies"
-                      stroke="#a78bfa"
+                      dataKey="MPC"
+                      stroke="#15846e"
                       strokeWidth={2}
                       dot={false}
                       activeDot={{ r: 4 }}
@@ -797,3 +798,4 @@ export default function AiReasoningPage() {
     </div>
   );
 }
+

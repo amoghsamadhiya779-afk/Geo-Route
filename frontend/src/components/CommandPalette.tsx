@@ -45,13 +45,14 @@ export function CommandPalette() {
             {cities?.map((city) => (
               <CommandItem
                 key={city.id}
+                value={city.name}
                 onSelect={() => {
                   setActiveCity(city.id);
                   setOpen(false);
                 }}
-                className="cursor-pointer"
+                className="cursor-pointer hover:bg-white/[0.02]"
               >
-                <MapPin className="mr-2 h-4 w-4 text-emerald-500" />
+                <MapPin className="mr-2 h-4 w-4 text-[#00f0ff]" />
                 <span>{city.name}</span>
                 <span className="ml-auto text-xs text-muted-foreground">{city.country}</span>
               </CommandItem>

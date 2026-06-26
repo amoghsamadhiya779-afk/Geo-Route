@@ -1,51 +1,109 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Globe2 } from "lucide-react";
+import dynamic from "next/dynamic";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { ScrollEngine } from "@/components/ui/ScrollEngine";
+
+// Lazy-load Three.js particle field to avoid SSR issues
+const ParticleField = dynamic(
+  () =>
+    import("@/components/ui/ParticleField").then((mod) => ({
+      default: mod.ParticleField,
+    })),
+  { ssr: false }
+);
 
 export default function LandingPage() {
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-background text-foreground flex items-center justify-center">
-      
-      {/* Background Globe Placeholder (Future React Three Fiber layer) */}
-      <div className="absolute inset-0 z-0 flex items-center justify-center opacity-30">
-         <div className="w-[800px] h-[800px] border border-primary/20 rounded-full animate-[spin_60s_linear_infinite]" />
-      </div>
+    <main className="relative w-full min-h-screen bg-[#000000] text-white selection:bg-[#8052ff] selection:text-white">
+      {/* Fixed Navigation */}
+      <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-6">
+        <div className="font-sans text-[18px] font-semibold tracking-[0.021em] text-white">
+          TRENT
+        </div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center text-center max-w-4xl px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+        <Link
+          href="/command-center"
+          className="group flex items-center gap-2 bg-[#8052ff] hover:bg-[#6b3ff5] text-white font-sans text-[12px] font-semibold uppercase tracking-[0.05em] px-4 py-2.5 rounded-[3.6px] transition-colors"
         >
-          <div className="flex items-center space-x-2 mb-6 justify-center text-primary">
-            <Globe2 className="w-8 h-8" />
-            <span className="tracking-[0.2em] font-mono text-sm font-semibold uppercase">Geo-Route Intelligence OS</span>
-          </div>
-          
-          <h1 className="text-6xl md:text-8xl font-bold tracking-tight mb-8">
-            TRENT
-          </h1>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-12 max-w-2xl mx-auto font-light leading-relaxed">
-            Transform routes, networks, mobility signals, and geospatial intelligence into actionable decisions.
-          </p>
+          Access Terminal
+          <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+        </Link>
+      </nav>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <Link href="/command-center">
-              <button className="group relative inline-flex h-14 items-center justify-center overflow-hidden rounded-md bg-primary px-8 font-medium text-primary-foreground transition-all duration-300 hover:bg-primary/90 hover:ring-2 hover:ring-primary/50 hover:ring-offset-2 hover:ring-offset-background">
-                <span className="mr-2">Explore Platform</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </button>
-            </Link>
-          </div>
+      {/* Hero Section — Full viewport */}
+      <section className="relative h-screen w-full flex items-center overflow-hidden">
+        {/* Particle Field — Earth/Routing constellation */}
+        <div className="absolute inset-0 z-0">
+          <ParticleField />
+        </div>
+
+        {/* Hero Content */}
+        <div className="relative z-10 max-w-[1200px] mx-auto w-full px-8 md:px-[86px]">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="max-w-[580px]"
+          >
+            {/* Eyebrow */}
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+              className="text-[#8052ff] font-sans text-[12px] font-semibold uppercase tracking-[0.05em] mb-6"
+            >
+              Pathfinding Intelligence Platform
+            </motion.p>
+
+            {/* Display Headline — weight 200, etched-in-light */}
+            <h1 className="text-[58px] md:text-[78px] font-sans font-extralight leading-[0.9] tracking-[-0.04em] text-white mb-8">
+              Route the
+              <br />
+              unroutable.
+            </h1>
+
+            {/* Body */}
+            <p className="text-[15px] font-sans font-normal leading-[1.5] tracking-[0.025em] text-[#bdbdbd] mb-10 max-w-[440px]">
+              TRENT OS runs A*, Dijkstra, and Contraction Hierarchies on real
+              OpenStreetMap graphs across 16 global cities. Predict congestion.
+              Simulate disruptions. Ship faster routes.
+            </p>
+
+            {/* CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+            >
+              <Link
+                href="/command-center"
+                className="group inline-flex items-center gap-2 bg-[#8052ff] hover:bg-[#6b3ff5] text-white font-sans text-[12px] font-semibold uppercase tracking-[0.05em] px-6 py-3.5 rounded-[3.6px] transition-all"
+              >
+                Enter Command Center
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          animate={{ opacity: [0.3, 0.7, 0.3] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          <span className="font-mono text-[11px] text-[#9a9a9a] tracking-[0.05em] uppercase">
+            Scroll
+          </span>
+          <div className="w-[1px] h-6 bg-gradient-to-b from-[#9a9a9a] to-transparent" />
         </motion.div>
-      </div>
+      </section>
 
-      {/* Decorative corners */}
-      <div className="absolute top-8 left-8 text-xs font-mono text-muted-foreground">SYS_LATENCY: 12ms</div>
-      <div className="absolute bottom-8 right-8 text-xs font-mono text-muted-foreground">NODE: PRIMARY_ALPHA</div>
+      {/* Scroll-driven Feature Sections */}
+      <ScrollEngine />
     </main>
   );
 }

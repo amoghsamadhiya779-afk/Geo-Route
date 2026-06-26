@@ -9,8 +9,8 @@ interface KpiCardProps {
 
 export function KpiCard({ icon, label, value, accent }: KpiCardProps) {
   return (
-    <div className="border border-border bg-card/50 backdrop-blur rounded-lg p-4 flex flex-col gap-1">
-      <div className="flex items-center justify-between text-muted-foreground text-xs">
+    <div className="border border-border bg-card p-4 flex flex-col gap-1 rounded-none shadow-none">
+      <div className="flex items-center justify-between text-muted-foreground text-xs uppercase font-mono tracking-widest">
         <span>{label}</span>
         {icon}
       </div>

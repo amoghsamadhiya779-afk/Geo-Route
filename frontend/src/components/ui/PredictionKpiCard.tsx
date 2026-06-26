@@ -17,48 +17,49 @@ export function PredictionKpiCard({
 }: PredictionKpiCardProps) {
   const colorMap = {
     emerald: {
-      bg: "bg-emerald-500/10",
-      border: "border-emerald-500/20",
-      text: "text-emerald-400",
-      icon: "text-emerald-500",
+      bg: "bg-[#8052ff]/10",
+      border: "border-[#8052ff]/30",
+      text: "text-white",
+      icon: "text-[#8052ff]",
     },
     sky: {
-      bg: "bg-sky-500/10",
-      border: "border-sky-500/20",
-      text: "text-sky-400",
-      icon: "text-sky-500",
+      bg: "bg-[#00f0ff]/10",
+      border: "border-[#00f0ff]/30",
+      text: "text-white",
+      icon: "text-[#00f0ff]",
     },
     amber: {
-      bg: "bg-amber-500/10",
-      border: "border-amber-500/20",
-      text: "text-amber-400",
-      icon: "text-amber-500",
+      bg: "bg-[#ffb829]/10",
+      border: "border-[#ffb829]/30",
+      text: "text-white",
+      icon: "text-[#ffb829]",
     },
     violet: {
-      bg: "bg-violet-500/10",
-      border: "border-violet-500/20",
-      text: "text-violet-400",
-      icon: "text-violet-500",
+      bg: "bg-[#8052ff]/10",
+      border: "border-[#8052ff]/30",
+      text: "text-white",
+      icon: "text-[#8052ff]",
     },
   };
   const c = colorMap[color];
 
   return (
-    <div className="border border-border bg-card/50 backdrop-blur rounded-xl p-4 flex flex-col gap-2">
+    <div className="border border-border/50 bg-transparent hover:bg-white/[0.02] transition-colors p-5 flex flex-col gap-3 rounded-2xl relative overflow-hidden group">
+      <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-[#8052ff]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
       <div className="flex items-center justify-between">
-        <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+        <span className="text-[11px] font-medium uppercase tracking-widest text-[#9a9a9a] font-sans">
           {label}
         </span>
         <div
-          className={`w-7 h-7 rounded-md ${c.bg} ${c.border} border flex items-center justify-center`}
+          className={`w-8 h-8 rounded-full ${c.bg} ${c.border} border flex items-center justify-center`}
         >
-          <Icon className={`w-3.5 h-3.5 ${c.icon}`} />
+          <Icon className={`w-4 h-4 ${c.icon}`} />
         </div>
       </div>
-      <span className={`text-2xl font-bold font-mono ${c.text}`}>
+      <span className={`text-3xl font-extralight font-sans ${c.text}`}>
         {value}
       </span>
-      <span className="text-[10px] font-mono text-muted-foreground">{sub}</span>
+      <span className="text-[11px] font-mono text-[#9a9a9a] flex items-center gap-1">{sub}</span>
     </div>
   );
 }
